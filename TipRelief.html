@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор Das для Tip Relief</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            background: linear-gradient(145deg, #f8f9ff, #e8eeff);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-section {
+            background: linear-gradient(145deg, #fff8e8, #ffe8cc);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .radius-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .radius-btn {
+            padding: 8px 15px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .radius-btn:hover, .radius-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .result {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ff6b35;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-label {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .method-info {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .method-info h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .method-info p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Калькулятор Das для Tip Relief</h1>
+        
+        <div class="calculator-grid">
+            <div class="input-section">
+                <h3 style="margin-bottom: 20px; color: #667eea;">Исходные данные</h3>
+                
+                <div class="form-group">
+                    <label for="da">Наружный диаметр Da (мм):</label>
+                    <input type="number" id="da" step="0.01" placeholder="Например: 180.0">
+                </div>
+
+                <div class="form-group">
+                    <label for="module">Модуль m (мм):</label>
+                    <input type="number" id="module" step="0.01" placeholder="Например: 5">
+                </div>
+
+                <div class="form-group">
+                    <label for="method">Метод расчета:</label>
+                    <select id="method">
+                        <option value="standard">Стандартный (Das = Da - 0.25×m)</option>
+                        <option value="conservative">Консервативный (Das = Da - 0.3×m)</option>
+                        <option value="aggressive">Агрессивный (Das = Da - 0.4×m)</option>
+                        <option value="kompas">Компас-3D / Шлицы (Das = Da - 0.13×m)</option>
+                        <option value="grinding">Зубошлифовка (Das = Da - 0.15×m)</option>
+                        <option value="custom">Пользовательский коэффициент</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="customCoeffGroup" style="display: none;">
+                    <label for="customCoeff">Коэффициент:</label>
+                    <input type="number" id="customCoeff" step="0.01" min="0.1" max="1.0" value="0.25">
+                </div>
+
+                <div class="form-group">
+                    <label>Быстрый выбор радиуса скругления:</label>
+                    <div class="radius-buttons">
+                        <button class="radius-btn" onclick="setRadius(0.3)">0.3</button>
+                        <button class="radius-btn" onclick="setRadius(0.5)">0.5</button>
+                        <button class="radius-btn" onclick="setRadius(0.75)">0.75</button>
+                        <button class="radius-btn active" onclick="setRadius(1.0)">1.0</button>
+                        <button class="radius-btn" onclick="setRadius(1.6)">1.6</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="radius">Радиус скругления (мм):</label>
+                    <input type="number" id="radius" step="0.01" min="0.1" value="1.0">
+                </div>
+
+                <button class="calculate-btn" onclick="calculate()">Рассчитать Das</button>
+            </div>
+
+            <div class="result-section">
+                <h3 style="margin-bottom: 20px; color: #ff6b35;">Результат</h3>
+                
+                <div class="result" id="result">---</div>
+                <div class="result-label">Диаметр Das (мм)</div>
+                
+                <div class="method-info" id="methodInfo">
+                    <h4>Выберите параметры для расчета</h4>
+                    <p>Введите наружный диаметр Da и модуль зубчатого колеса</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRadius = 1.0;
+
+        function setRadius(value) {
+            currentRadius = value;
+            document.getElementById('radius').value = value;
+            
+            // Обновляем активную кнопку
+            document.querySelectorAll('.radius-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Пересчитываем если есть данные
+            if (document.getElementById('da').value && document.getElementById('module').value) {
+                calculate();
+            }
+        }
+
+        document.getElementById('method').addEventListener('change', function() {
+            const customGroup = document.getElementById('customCoeffGroup');
+            if (this.value === 'custom') {
+                customGroup.style.display = 'block';
+            } else {
+                customGroup.style.display = 'none';
+            }
+            
+            // Пересчитываем если есть данные
+            if (document.getElementById('da').value && document.getElementById('module').value) {
+                calculate();
+            }
+        });
+
+        // Обновляем радиус при ручном вводе
+        document.getElementById('radius').addEventListener('input', function() {
+            currentRadius = parseFloat(this.value) || 1.0;
+            
+            // Убираем активность со всех кнопок если значение не стандартное
+            const standardValues = [0.3, 0.5, 0.75, 1.0, 1.6];
+            if (!standardValues.includes(currentRadius)) {
+                document.querySelectorAll('.radius-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+        });
+
+        function calculate() {
+            const da = parseFloat(document.getElementById('da').value);
+            const module = parseFloat(document.getElementById('module').value);
+            const method = document.getElementById('method').value;
+            const radius = parseFloat(document.getElementById('radius').value);
+
+            if (!da || !module || !radius) {
+                document.getElementById('result').textContent = '---';
+                document.getElementById('methodInfo').innerHTML = `
+                    <h4>Ошибка ввода</h4>
+                    <p>Пожалуйста, заполните все обязательные поля</p>
+                `;
+                return;
+            }
+
+            let coefficient;
+            let methodName;
+            let description;
+
+            switch(method) {
+                case 'standard':
+                    coefficient = 0.25;
+                    methodName = 'Стандартный метод';
+                    description = 'Универсальный метод для большинства применений';
+                    break;
+                case 'conservative':
+                    coefficient = 0.3;
+                    methodName = 'Консервативный метод';
+                    description = 'Больше снятие материала, лучше для высоконагруженных передач';
+                    break;
+                case 'aggressive':
+                    coefficient = 0.4;
+                    methodName = 'Агрессивный метод';
+                    description = 'Максимальное снятие для критических применений';
+                    break;
+                case 'kompas':
+                    coefficient = 0.13;
+                    methodName = 'Компас-3D / Шлицы';
+                    description = 'Алгоритм расчета как в Компас-3D для шлицевых соединений';
+                    break;
+                case 'grinding':
+                    coefficient = 0.15;
+                    methodName = 'Зубошлифовка';
+                    description = 'Оптимизировано для операций зубошлифования';
+                    break;
+                case 'custom':
+                    coefficient = parseFloat(document.getElementById('customCoeff').value) || 0.25;
+                    methodName = 'Пользовательский метод';
+                    description = `Коэффициент: ${coefficient}`;
+                    break;
+            }
+
+            const das = da - (coefficient * module);
+            
+            // Учитываем влияние радиуса скругления на точность
+            const radiusCorrection = radius * 0.1; // Небольшая коррекция
+            const finalDas = das - radiusCorrection;
+
+            document.getElementById('result').textContent = finalDas.toFixed(3);
+            
+            document.getElementById('methodInfo').innerHTML = `
+                <h4>${methodName}</h4>
+                <p>${description}</p>
+                <div class="formula">Das = ${da} - (${coefficient} × ${module}) - ${radiusCorrection.toFixed(3)} = ${finalDas.toFixed(3)} мм</div>
+                <p><strong>Радиус скругления:</strong> ${radius} мм</p>
+                <p><strong>Коррекция на радиус:</strong> -${radiusCorrection.toFixed(3)} мм</p>
+            `;
+        }
+
+        // Автоматический расчет при изменении значений
+        document.getElementById('da').addEventListener('input', calculate);
+        document.getElementById('module').addEventListener('input', calculate);
+        document.getElementById('customCoeff').addEventListener('input', calculate);
+        document.getElementById('radius').addEventListener('input', calculate);
+    </script>
+</body>
+</html>
